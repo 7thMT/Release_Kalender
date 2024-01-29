@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "130609492552",
+    "project_id": "release-kalender-5b683",
+    "storage_bucket": "release-kalender-5b683.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130609492552:android:67f3b6a3ccdd63617d1e7d",
+        "android_client_info": {
+          "package_name": "com.example.release_kalender"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmJOUyjGQUlyTMXQogQzxAjfcNdjXWl2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
