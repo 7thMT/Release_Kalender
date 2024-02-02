@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -60,7 +59,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         // Listener für Like-Button
         holder.gameLikeButton.setOnClickListener(view -> {
             // Implementierung, was passieren soll, wenn auf Like geklickt wird
-            pressedgameLikeButton(game, position);
+            pressedGameLikeButton(game, position);
         });
 
         // Listener für Save-Button
@@ -96,7 +95,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         }
     }
 
-    private void pressedgameLikeButton(Game game, int position){
+    private void pressedGameLikeButton(Game game, int position){
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Aktuelle UserID
         String likeDocId = userId + "_" + game.getId();
 

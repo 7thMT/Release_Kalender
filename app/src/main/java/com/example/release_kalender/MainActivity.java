@@ -9,66 +9,29 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.release_kalender.databinding.ActivityMainBinding;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private GameAdapter adapter;
-    private List<Game> gameList = new ArrayList<>();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GameAdapter(gameList);
-        recyclerView.setAdapter(adapter);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        loadGamesFromFirestore();
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_home, R.id.navigation_trending, R.id.navigation_calender)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
-    private void loadGamesFromFirestore() {
-        db.collection("games").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                final int[] loadedLikes ={0};
-                int gameCount = task.getResult().size();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Game game = document.toObject(Game.class);
-                    game.setId(document.getId());
-                    gameList.add(game);
-                    loadLikesCount(game, gameCount, loadedLikes);
-                }
-                adapter.notifyDataSetChanged(); // Benachrichtigen Sie den Adapter, dass sich die Daten geändert haben
-            } else {
-            }
-        });
-    }
-    private void loadLikesCount(Game game, int gameCount, final int[] loadedLikes) {
-        db.collection("likes")
-                .whereEqualTo("gameId", game.getId())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int likeCount = queryDocumentSnapshots.size(); // Anzahl der Likes
-                    game.setLikeCount(likeCount); // Setze die Anzahl der Likes im Game-Objekt
-
-                    // Zähler für geladene Likes erhöhen
-                    loadedLikes[0]++;
-                    // Wenn alle Likes geladen wurden, benachrichtige den Adapter
-                    if (loadedLikes[0] == gameCount) {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-    }
 }
