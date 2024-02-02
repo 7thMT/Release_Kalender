@@ -52,25 +52,25 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="8dp"
+                android:src="@drawable/like"
                 android:layout_centerVertical="true"/>
 
             <TextView
                 android:id="@+id/gameLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/gameLikeButton"
                 android:drawablePadding="8dp"
                 android:text="3468"
-                android:textSize="14sp"
-                android:layout_centerVertical="true"/>
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/gameSaveButton"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="8dp"
+                android:src="@drawable/bookmark"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 

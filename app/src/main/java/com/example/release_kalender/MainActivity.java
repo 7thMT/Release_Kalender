@@ -42,13 +42,33 @@ public class MainActivity extends AppCompatActivity {
     private void loadGamesFromFirestore() {
         db.collection("games").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                final int[] loadedLikes ={0};
+                int gameCount = task.getResult().size();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Game game = document.toObject(Game.class);
+                    game.setId(document.getId());
                     gameList.add(game);
+                    loadLikesCount(game, gameCount, loadedLikes);
                 }
                 adapter.notifyDataSetChanged(); // Benachrichtigen Sie den Adapter, dass sich die Daten geändert haben
             } else {
             }
         });
+    }
+    private void loadLikesCount(Game game, int gameCount, final int[] loadedLikes) {
+        db.collection("likes")
+                .whereEqualTo("gameId", game.getId())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int likeCount = queryDocumentSnapshots.size(); // Anzahl der Likes
+                    game.setLikeCount(likeCount); // Setze die Anzahl der Likes im Game-Objekt
+
+                    // Zähler für geladene Likes erhöhen
+                    loadedLikes[0]++;
+                    // Wenn alle Likes geladen wurden, benachrichtige den Adapter
+                    if (loadedLikes[0] == gameCount) {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
     }
 }

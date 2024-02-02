@@ -100,14 +100,13 @@ public class Register extends AppCompatActivity {
                                         String username = editTextUsername.getText().toString();
                                         String name = editTextName.getText().toString();
 
-                                        // Erstelle ein neues User-Objekt oder eine Map, um die Daten zu speichern
-                                        Map<String, Object> user = new HashMap<>();
-                                        user.put("email", email);
-                                        user.put("username", username);
-                                        user.put("name", name);
+                                        String userId = firebaseUser.getUid();
+
+                                        // Erstelle ein neues User-Objekt
+                                        User user = new User(name, username, email, userId);
 
                                         // Speichere den Benutzer in Firestore
-                                        db.collection("users").document(firebaseUser.getUid())
+                                        db.collection("users").document(userId)
                                                 .set(user)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override

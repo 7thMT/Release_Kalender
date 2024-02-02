@@ -2,6 +2,7 @@ package com.example.release_kalender;
 
 public class Game {
     private String id, name, publisher, releaseDate, description, imageURL, genre;
+    private int likeCount;
 
     public Game(){
 
@@ -25,6 +26,10 @@ public class Game {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getImageURL() {
         return imageURL;
     }
@@ -43,5 +48,13 @@ public class Game {
 
     public String getGenre() {
         return genre;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 }
