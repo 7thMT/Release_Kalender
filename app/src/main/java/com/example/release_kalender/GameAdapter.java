@@ -1,11 +1,15 @@
 package com.example.release_kalender;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.Manifest;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,10 +25,16 @@ import java.util.Map;
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
     private List<Game> gameList; // Die Datenquelle für den Adapter
+    private GameAdapterListener listener;
 
+    public interface GameAdapterListener{
+        void onRequestCalendarPermission(Game game);
+        void onCreateCalendarEvent(Game game);
+    }
     // Konstruktor des Adapters
-    public GameAdapter(List<Game> gameList) {
+    public GameAdapter(List<Game> gameList, GameAdapterListener listener) {
         this.gameList = gameList;
+        this.listener = listener;
     }
 
     // Erstellen neuer Views (wird vom Layout-Manager aufgerufen)
@@ -56,6 +66,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 .error(R.drawable.ic_game_placeholder) // Bild für den Fehlerfall
                 .into(holder.gameImage);
 
+        holder.gameImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), GameDetailActivity.class);
+                intent.putExtra("GameDetail", game);
+                view.getContext().startActivity(intent);
+            }
+        });
         // Listener für Like-Button
         holder.gameLikeButton.setOnClickListener(view -> {
             // Implementierung, was passieren soll, wenn auf Like geklickt wird
@@ -63,8 +81,21 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         });
 
         // Listener für Save-Button
-        holder.gameSaveButton.setOnClickListener(view -> {
-            // Implementierung, was passieren soll, wenn auf Save geklickt wird
+        holder.gameSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition != RecyclerView.NO_POSITION) {
+                    Game currentGame = gameList.get(currentPosition);
+                    if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                        // Rufen Sie die Methode der Schnittstelle auf, um die Berechtigung anzufordern
+                        listener.onRequestCalendarPermission(currentGame);
+                    } else {
+                        // Rufen Sie die Methode der Schnittstelle auf, um den Kalendereintrag zu erstellen
+                        listener.onCreateCalendarEvent(currentGame);
+                    }
+                }
+            }
         });
     }
 

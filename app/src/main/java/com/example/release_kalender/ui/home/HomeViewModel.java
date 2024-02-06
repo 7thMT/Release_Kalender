@@ -64,6 +64,7 @@ public class HomeViewModel extends ViewModel {
 
                     loadedLikes[0]++;
                     if (loadedLikes[0] == gameCount) {
+                        gamesLiveData.setValue(gameList);
                         loadingLiveData.setValue(false);
                     }
                 });

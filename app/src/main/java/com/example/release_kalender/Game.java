@@ -1,6 +1,8 @@
 package com.example.release_kalender;
 
-public class Game {
+import java.io.Serializable;
+
+public class Game implements Serializable {
     private String id, name, publisher, releaseDate, description, imageURL, genre;
     private int likeCount;
 
