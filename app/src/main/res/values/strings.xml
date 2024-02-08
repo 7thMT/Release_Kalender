@@ -12,4 +12,5 @@
     <string name="logout">Logout</string>
     <string name="name">Name</string>
     <string name="username">Username</string>
+    <string name="abmelden">Abmelden</string>
 </resources>
