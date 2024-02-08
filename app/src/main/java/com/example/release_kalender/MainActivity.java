@@ -1,6 +1,9 @@
 package com.example.release_kalender;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -11,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.release_kalender.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +36,28 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Aufblasen des Menüs; dies fügt Items zur Action Bar hinzu, wenn sie vorhanden ist.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.action_logout) {
+            // Führe die Abmelde-Logik hier aus
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, Login.class));
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }
