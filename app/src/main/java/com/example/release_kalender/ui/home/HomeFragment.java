@@ -1,16 +1,22 @@
 package com.example.release_kalender.ui.home;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,10 +35,25 @@ import java.util.Date;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment implements GameAdapter.GameAdapterListener {
-    private static final int REQUEST_WRITE_CALENDAR_PERMISSION = 1;
     private FragmentHomeBinding binding;
     private GameAdapter adapter;
     private List<Game> gameList = new ArrayList<>();  // Initialize an empty list
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                    if (isGranted) {
+                        Toast.makeText(getContext(), "Berechtigung erteilt", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        Toast.makeText(getContext(), "Berechtigung erforderlich, um Spiele im Kalender zu speichern.", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,25 +81,19 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     }
     @Override
     public void onRequestCalendarPermission(Game game) {
-        // Berechtigungsanfrage
-        requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, REQUEST_WRITE_CALENDAR_PERMISSION);
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+            createCalendarEvent(game);
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CALENDAR)) {
+            showRationaleDialog(game);
+        } else {
+            openAppSettings();
+        }
     }
     @Override
     public void onCreateCalendarEvent(Game game) {
-        // Kalendereintrag erstellen
         createCalendarEvent(game);
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_WRITE_CALENDAR_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Berechtigung wurde erteilt, erstellen Sie den Kalendereintrag
-            } else {
-                // Berechtigung wurde verweigert
-            }
-        }
-    }
+
     private void createCalendarEvent(Game game) {
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setData(CalendarContract.Events.CONTENT_URI);
@@ -110,5 +125,21 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void showRationaleDialog(Game game) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Berechtigung erforderlich")
+                .setMessage("Zugriff auf den Kalender ist notwendig, um Spiele hinzuzufügen. Bitte erlaube den Zugriff.")
+                .setPositiveButton("Erlauben", (dialog, which) -> requestPermissionLauncher.launch(Manifest.permission.WRITE_CALENDAR))
+                .setNegativeButton("Ablehnen", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void openAppSettings() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
     }
 }
