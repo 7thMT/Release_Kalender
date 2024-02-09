@@ -32,7 +32,6 @@ import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Locale;
 
 public class HomeFragment extends Fragment implements GameAdapter.GameAdapterListener {
     private FragmentHomeBinding binding;
@@ -84,7 +83,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             createCalendarEvent(game);
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CALENDAR)) {
-            showRationaleDialog(game);
+            showRationaleDialog();
         } else {
             openAppSettings();
         }
@@ -127,7 +126,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         binding = null;
     }
 
-    private void showRationaleDialog(Game game) {
+    private void showRationaleDialog() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Berechtigung erforderlich")
                 .setMessage("Zugriff auf den Kalender ist notwendig, um Spiele hinzuzufügen. Bitte erlaube den Zugriff.")
