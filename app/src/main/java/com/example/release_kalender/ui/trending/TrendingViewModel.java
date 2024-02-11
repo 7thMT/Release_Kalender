@@ -4,16 +4,71 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.release_kalender.Game;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class TrendingViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private final MutableLiveData<List<Game>> gamesLiveData;
+    private final MutableLiveData<Boolean> loadingLiveData;
+
+    private final List<Game> gameList;
+    private final FirebaseFirestore db;
 
     public TrendingViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is trending fragment");
+        gamesLiveData = new MutableLiveData<>();
+        loadingLiveData = new MutableLiveData<>();
+        gameList = new ArrayList<>();
+        db = FirebaseFirestore.getInstance();
+
+        loadGamesFromFirestore();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<Game>> getGames() {
+        return gamesLiveData;
+    }
+
+    public LiveData<Boolean> isLoading() {
+        return loadingLiveData;
+    }
+
+    private void loadGamesFromFirestore() {
+        loadingLiveData.setValue(true);
+
+        db.collection("games").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final int[] loadedLikes = {0};
+                int gameCount = task.getResult().size();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Game game = document.toObject(Game.class);
+                    game.setId(document.getId());
+                    gameList.add(game);
+                    loadLikesCount(game, gameCount, loadedLikes);
+                }
+            }
+        });
+    }
+
+    private void loadLikesCount(Game game, int gameCount, final int[] loadedLikes) {
+        db.collection("likes")
+                .whereEqualTo("gameId", game.getId())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    int likeCount = queryDocumentSnapshots.size();
+                    game.setLikeCount(likeCount);
+
+                    loadedLikes[0]++;
+                    if (loadedLikes[0] == gameCount) {
+                        // Sort the game list by likes before updating LiveData
+                        Collections.sort(gameList, (g1, g2) -> Integer.compare(g2.getLikeCount(), g1.getLikeCount()));
+                        gamesLiveData.setValue(gameList);
+                        loadingLiveData.setValue(false);
+                    }
+                });
     }
 }
