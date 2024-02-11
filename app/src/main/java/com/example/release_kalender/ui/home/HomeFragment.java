@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,7 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.release_kalender.Game;
 import com.example.release_kalender.GameAdapter;
+import com.example.release_kalender.R;
 import com.example.release_kalender.databinding.FragmentHomeBinding;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     private FragmentHomeBinding binding;
     private GameAdapter adapter;
     private List<Game> gameList = new ArrayList<>();  // Initialize an empty list
+    private Chip lastCheckedChip = null;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
@@ -51,6 +56,30 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
                         Toast.makeText(getContext(), "Berechtigung erforderlich, um Spiele im Kalender zu speichern.", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ChipGroup chipGroup = view.findViewById(R.id.chip_group);
+
+        for(int i = 0; i < chipGroup.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroup.getChildAt(i);
+            chip.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (lastCheckedChip != null && lastCheckedChip.getId() == chip.getId()) {
+                        chip.setChecked(false);
+                        lastCheckedChip = null;
+                        adapter.setGames(gameList);
+                    } else {
+                            lastCheckedChip = chip;
+                            filterGames(chip.getText().toString());
+                        }
+                adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
 
@@ -88,9 +117,16 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
             openAppSettings();
         }
     }
+
     @Override
     public void onCreateCalendarEvent(Game game) {
         createCalendarEvent(game);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void createCalendarEvent(Game game) {
@@ -116,14 +152,8 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         } catch (ParseException e) {
             e.printStackTrace();
         }
-            startActivity(intent);
+        startActivity(intent);
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 
     private void showRationaleDialog() {
@@ -140,5 +170,15 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         Uri uri = Uri.fromParts("package", requireActivity().getPackageName(), null);
         intent.setData(uri);
         startActivity(intent);
+    }
+    private void filterGames(String filter) {
+        List<Game> filteredList = new ArrayList<>();
+        for (Game game : gameList) { // gameList sollte deine ursprüngliche Liste der Spiele sein
+            if (game.getGenre().contains(filter)) {
+                filteredList.add(game);
+            }
+        }
+        // Setze die gefilterte Liste und benachrichtige den Adapter
+        adapter.setGames(filteredList);
     }
 }

@@ -154,4 +154,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             }
         });
     }
+
+    public void setGames(List<Game> games) {
+        this.gameList = games;
+        notifyDataSetChanged();
+    }
 }
