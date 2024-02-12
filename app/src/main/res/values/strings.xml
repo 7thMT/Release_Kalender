@@ -13,4 +13,5 @@
     <string name="name">Name</string>
     <string name="username">Username</string>
     <string name="abmelden">Abmelden</string>
+    <string name="darkmode">Darkmode</string>
 </resources>

@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -55,9 +56,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, Login.class));
             finish();
             return true;
+        }else if (id == R.id.action_darkmode) {
+            toggleDarkMode();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+    private void toggleDarkMode(){
+        int nightMode = AppCompatDelegate.getDefaultNightMode();
+        if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        recreate(); // Aktualisiert die Aktivität, um die Theme-Änderung zu reflektieren
+    }
+    }
 
-}
