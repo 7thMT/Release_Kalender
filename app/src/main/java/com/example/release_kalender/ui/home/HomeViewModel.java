@@ -36,8 +36,13 @@ public class HomeViewModel extends ViewModel {
         return loadingLiveData;
     }
 
+    public void refreshGames(){
+        loadGamesFromFirestore();
+    }
+
     private void loadGamesFromFirestore() {
         loadingLiveData.setValue(true);
+        gameList.clear();
 
         db.collection("games").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

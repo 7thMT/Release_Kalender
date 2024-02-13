@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.release_kalender.Game;
 import com.example.release_kalender.GameAdapter;
 import com.example.release_kalender.databinding.FragmentTrendingBinding;
+import com.example.release_kalender.ui.home.HomeViewModel;
 
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.Date;
 
 public class TrendingFragment extends Fragment implements GameAdapter.GameAdapterListener {
     private FragmentTrendingBinding binding;
+    private TrendingViewModel trendingViewModel;
     private GameAdapter adapter;
     private List<Game> gameList = new ArrayList<>();
     private ActivityResultLauncher<String> requestPermissionLauncher;
@@ -58,6 +60,14 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        trendingViewModel = new ViewModelProvider(this).get(TrendingViewModel.class);
+
+        trendingViewModel.getGames().observe(getViewLifecycleOwner(), games -> {
+            // Update UI with the loaded games
+            gameList.clear();
+            gameList.addAll(games);
+            adapter.notifyDataSetChanged();
+        });
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -81,6 +91,11 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
         });
 
         return root;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        trendingViewModel.refreshGames();
     }
 
     @Override

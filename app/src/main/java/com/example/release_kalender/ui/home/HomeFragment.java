@@ -39,6 +39,7 @@ import java.util.Date;
 
 public class HomeFragment extends Fragment implements GameAdapter.GameAdapterListener {
     private FragmentHomeBinding binding;
+    private HomeViewModel homeViewModel;
     private GameAdapter adapter;
     private List<Game> gameList = new ArrayList<>();  // Initialize an empty list
     private Chip lastCheckedChip = null;
@@ -58,10 +59,20 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
                 });
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ChipGroup chipGroup = view.findViewById(R.id.chip_group);
+
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+        homeViewModel.getGames().observe(getViewLifecycleOwner(), games -> {
+            // Update UI with the loaded games
+            gameList.clear();
+            gameList.addAll(games);
+            adapter.notifyDataSetChanged();
+        });
 
         for(int i = 0; i < chipGroup.getChildCount(); i++) {
             Chip chip = (Chip) chipGroup.getChildAt(i);
@@ -107,6 +118,12 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
 
         return root;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeViewModel.refreshGames();
+    }
+
     @Override
     public void onRequestCalendarPermission(Game game) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {

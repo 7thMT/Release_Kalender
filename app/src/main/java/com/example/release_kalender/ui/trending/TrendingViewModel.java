@@ -36,9 +36,13 @@ public class TrendingViewModel extends ViewModel {
     public LiveData<Boolean> isLoading() {
         return loadingLiveData;
     }
+    public void refreshGames(){
+        loadGamesFromFirestore();
+    }
 
     private void loadGamesFromFirestore() {
         loadingLiveData.setValue(true);
+        gameList.clear();
 
         db.collection("games").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
