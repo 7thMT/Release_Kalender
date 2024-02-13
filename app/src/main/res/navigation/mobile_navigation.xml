@@ -8,18 +8,19 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.release_kalender.ui.home.HomeFragment"
-        android:label="Find new Games"
+        android:label="@string/label_home"
         tools:layout="@layout/fragment_home" />
+
 
     <fragment
         android:id="@+id/navigation_trending"
         android:name="com.example.release_kalender.ui.trending.TrendingFragment"
-        android:label="Trending Games"
+        android:label="@string/label_trending"
         tools:layout="@layout/fragment_trending" />
 
     <fragment
         android:id="@+id/navigation_calender"
         android:name="com.example.release_kalender.ui.calender.CalenderFragment"
-        android:label="@string/title_calender"
+        android:label="@string/label_calender"
         tools:layout="@layout/fragment_calender" />
 </navigation>
