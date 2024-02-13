@@ -11,9 +11,4 @@
         android:icon="@drawable/baseline_trending_up_24dp"
         android:title="@string/title_trending" />
 
-    <item
-        android:id="@+id/navigation_calender"
-        android:icon="@drawable/baseline_calendar_month_24"
-        android:title="@string/title_calender" />
-
 </menu>

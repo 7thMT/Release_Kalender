@@ -4,8 +4,6 @@
     <string name="title_home">Home</string>
     <string name="label_trending">Trending Games</string>
     <string name="title_trending">Trending</string>
-    <string name="label_calender">Calender</string>
-    <string name="title_calender">Calender</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
