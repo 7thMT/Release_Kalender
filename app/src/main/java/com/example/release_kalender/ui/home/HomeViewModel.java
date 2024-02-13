@@ -31,10 +31,6 @@ public class HomeViewModel extends ViewModel {
         return gamesLiveData;
     }
 
-    public LiveData<Boolean> isLoading() {
-        return loadingLiveData;
-    }
-
     public void refreshGames(){
         loadGamesFromFirestore();
     }
