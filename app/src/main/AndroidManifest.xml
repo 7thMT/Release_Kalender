@@ -18,7 +18,7 @@
         tools:targetApi="31">
         <activity
             android:name=".GameDetailActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Theme.Release_Kalender"
             android:exported="false" />
         <activity
             android:name=".Register"

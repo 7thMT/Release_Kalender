@@ -18,20 +18,18 @@ public class GameDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_detail);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Game game = (Game) getIntent().getSerializableExtra("GameDetail");
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("Game Description");
+            actionBar.setTitle(game.getName());
         }
 
         ImageView imageViewGame = findViewById(R.id.imageViewGame);
         TextView textViewDescription = findViewById(R.id.textViewDescription);
         TextView textViewPublisher = findViewById(R.id.textViewPublisher);
 
-        Game game = (Game) getIntent().getSerializableExtra("GameDetail");
 
         Picasso.get()
                 .load(game.getImageURL())
