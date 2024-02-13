@@ -25,7 +25,6 @@ public class HomeViewModel extends ViewModel {
         gameList = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
 
-        loadGamesFromFirestore();
     }
 
     public LiveData<List<Game>> getGames() {
