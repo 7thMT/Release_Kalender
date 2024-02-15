@@ -63,7 +63,6 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
         trendingViewModel = new ViewModelProvider(this).get(TrendingViewModel.class);
 
         trendingViewModel.getGames().observe(getViewLifecycleOwner(), games -> {
-            // Update UI with the loaded games
             gameList.clear();
             gameList.addAll(games);
             adapter.notifyDataSetChanged();

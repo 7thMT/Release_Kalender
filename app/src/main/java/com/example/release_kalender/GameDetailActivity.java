@@ -40,7 +40,7 @@ public class GameDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish(); // Schließt die aktuelle Activity und kehrt zur vorherigen zurück
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);

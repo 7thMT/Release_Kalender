@@ -38,7 +38,6 @@ public class Register extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -96,16 +95,13 @@ public class Register extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     FirebaseUser firebaseUser = mAuth.getCurrentUser();
                                     if (firebaseUser != null) {
-                                        // Hier holen wir den Text aus den TextInputEditText-Feldern
                                         String username = editTextUsername.getText().toString();
                                         String name = editTextName.getText().toString();
 
                                         String userId = firebaseUser.getUid();
 
-                                        // Erstelle ein neues User-Objekt
                                         User user = new User(name, username, email, userId);
 
-                                        // Speichere den Benutzer in Firestore
                                         db.collection("users").document(userId)
                                                 .set(user)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

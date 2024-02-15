@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     private FragmentHomeBinding binding;
     private HomeViewModel homeViewModel;
     private GameAdapter adapter;
-    private List<Game> gameList = new ArrayList<>();  // Initialize an empty list
+    private List<Game> gameList = new ArrayList<>();
     private Chip lastCheckedChip = null;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
@@ -68,7 +68,6 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         homeViewModel.getGames().observe(getViewLifecycleOwner(), games -> {
-            // Update UI with the loaded games
             gameList.clear();
             gameList.addAll(games);
             adapter.notifyDataSetChanged();
@@ -105,15 +104,13 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
         RecyclerView recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Pass the initially empty list to the GameAdapter
         adapter = new GameAdapter(gameList, this);
         recyclerView.setAdapter(adapter);
 
         homeViewModel.getGames().observe(getViewLifecycleOwner(), games -> {
-            // Update UI with the loaded games
-            gameList.clear();  // Clear the current list
-            gameList.addAll(games);  // Update it with the new data
-            adapter.notifyDataSetChanged();  // Notify the adapter of the data change
+            gameList.clear();
+            gameList.addAll(games);
+            adapter.notifyDataSetChanged();
         });
 
         return root;
@@ -190,12 +187,11 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     }
     private void filterGames(String filter) {
         List<Game> filteredList = new ArrayList<>();
-        for (Game game : gameList) { // gameList sollte deine ursprüngliche Liste der Spiele sein
+        for (Game game : gameList) {
             if (game.getGenre().contains(filter)) {
                 filteredList.add(game);
             }
         }
-        // Setze die gefilterte Liste und benachrichtige den Adapter
         adapter.setGames(filteredList);
     }
 }

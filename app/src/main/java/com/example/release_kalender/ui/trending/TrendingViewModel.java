@@ -68,7 +68,6 @@ public class TrendingViewModel extends ViewModel {
 
                     loadedLikes[0]++;
                     if (loadedLikes[0] == gameCount) {
-                        // Sort the game list by likes before updating LiveData
                         Collections.sort(gameList, (g1, g2) -> Integer.compare(g2.getLikeCount(), g1.getLikeCount()));
                         gamesLiveData.setValue(gameList);
                         loadingLiveData.setValue(false);

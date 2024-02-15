@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_trending)
                 .build();
@@ -40,18 +38,15 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Aufblasen des Menüs; dies fügt Items zur Action Bar hinzu, wenn sie vorhanden ist.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.action_logout) {
-            // Führe die Abmelde-Logik hier aus
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, Login.class));
             finish();
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
-        recreate(); // Aktualisiert die Aktivität, um die Theme-Änderung zu reflektieren
+        recreate();
     }
     }
 
