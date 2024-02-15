@@ -2,7 +2,6 @@ package com.example.release_kalender;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ public class GameDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            assert game != null;
             actionBar.setTitle(game.getName());
         }
 
@@ -31,6 +31,7 @@ public class GameDetailActivity extends AppCompatActivity {
         TextView textViewPublisher = findViewById(R.id.textViewPublisher);
 
 
+        assert game != null;
         Picasso.get()
                 .load(game.getImageURL())
                 .into(imageViewGame);

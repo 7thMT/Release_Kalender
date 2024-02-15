@@ -1,6 +1,7 @@
 package com.example.release_kalender.ui.home;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,7 +42,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     private FragmentHomeBinding binding;
     private HomeViewModel homeViewModel;
     private GameAdapter adapter;
-    private List<Game> gameList = new ArrayList<>();
+    private final List<Game> gameList = new ArrayList<>();
     private Chip lastCheckedChip = null;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
@@ -60,6 +61,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -75,24 +77,22 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
 
         for(int i = 0; i < chipGroup.getChildCount(); i++) {
             Chip chip = (Chip) chipGroup.getChildAt(i);
-            chip.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (lastCheckedChip != null && lastCheckedChip.getId() == chip.getId()) {
-                        chip.setChecked(false);
-                        lastCheckedChip = null;
-                        adapter.setGames(gameList);
-                    } else {
-                            lastCheckedChip = chip;
-                            filterGames(chip.getText().toString());
-                        }
-                adapter.notifyDataSetChanged();
-                }
+            chip.setOnClickListener(v -> {
+                if (lastCheckedChip != null && lastCheckedChip.getId() == chip.getId()) {
+                    chip.setChecked(false);
+                    lastCheckedChip = null;
+                    adapter.setGames(gameList);
+                } else {
+                        lastCheckedChip = chip;
+                        filterGames(chip.getText().toString());
+                    }
+            adapter.notifyDataSetChanged();
             });
         }
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment implements GameAdapter.GameAdapterLis
 
     @Override
     public void onRequestCalendarPermission(Game game) {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             createCalendarEvent(game);
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CALENDAR)) {
             showRationaleDialog();

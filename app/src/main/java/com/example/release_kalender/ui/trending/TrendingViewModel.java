@@ -9,7 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TrendingViewModel extends ViewModel {
@@ -33,9 +32,6 @@ public class TrendingViewModel extends ViewModel {
         return gamesLiveData;
     }
 
-    public LiveData<Boolean> isLoading() {
-        return loadingLiveData;
-    }
     public void refreshGames(){
         loadGamesFromFirestore();
     }
@@ -68,7 +64,7 @@ public class TrendingViewModel extends ViewModel {
 
                     loadedLikes[0]++;
                     if (loadedLikes[0] == gameCount) {
-                        Collections.sort(gameList, (g1, g2) -> Integer.compare(g2.getLikeCount(), g1.getLikeCount()));
+                        gameList.sort((g1, g2) -> Integer.compare(g2.getLikeCount(), g1.getLikeCount()));
                         gamesLiveData.setValue(gameList);
                         loadingLiveData.setValue(false);
                     }

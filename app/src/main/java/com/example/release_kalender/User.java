@@ -5,8 +5,6 @@ import java.util.List;
 public class User {
 
     private String name, username, email, userId;
-    private List<String> savedGames;
-    private List<String> likedGames;
 
     public User(String name, String username, String email, String userId) {
         this.name = name;

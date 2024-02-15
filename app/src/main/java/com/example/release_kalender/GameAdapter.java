@@ -1,5 +1,6 @@
 package com.example.release_kalender;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
@@ -21,11 +22,12 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
 
     private List<Game> gameList;
-    private GameAdapterListener listener;
+    private final GameAdapterListener listener;
 
     public interface GameAdapterListener{
         void onRequestCalendarPermission(Game game);
@@ -60,30 +62,22 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
                 .error(R.drawable.ic_game_placeholder)
                 .into(holder.gameImage);
 
-        holder.gameImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), GameDetailActivity.class);
-                intent.putExtra("GameDetail", game);
-                view.getContext().startActivity(intent);
-            }
+        holder.gameImage.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), GameDetailActivity.class);
+            intent.putExtra("GameDetail", game);
+            view.getContext().startActivity(intent);
         });
         // Listener für Like-Button
-        holder.gameLikeButton.setOnClickListener(view -> {
-            pressedGameLikeButton(game, position);
-        });
+        holder.gameLikeButton.setOnClickListener(view -> pressedGameLikeButton(game, position));
 
-        holder.gameSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int currentPosition = holder.getAdapterPosition();
-                if (currentPosition != RecyclerView.NO_POSITION) {
-                    Game currentGame = gameList.get(currentPosition);
-                    if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                        listener.onRequestCalendarPermission(currentGame);
-                    } else {
-                        listener.onCreateCalendarEvent(currentGame);
-                    }
+        holder.gameSaveButton.setOnClickListener(view -> {
+            int currentPosition = holder.getAdapterPosition();
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                Game currentGame = gameList.get(currentPosition);
+                if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                    listener.onRequestCalendarPermission(currentGame);
+                } else {
+                    listener.onCreateCalendarEvent(currentGame);
                 }
             }
         });
@@ -115,7 +109,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     private void pressedGameLikeButton(Game game, int position){
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         String likeDocId = userId + "_" + game.getId();
 
         DocumentReference likeRef = FirebaseFirestore.getInstance()
@@ -141,6 +135,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setGames(List<Game> games) {
         this.gameList = games;
         notifyDataSetChanged();

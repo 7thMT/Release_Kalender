@@ -1,6 +1,7 @@
 package com.example.release_kalender.ui.trending;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.release_kalender.Game;
 import com.example.release_kalender.GameAdapter;
 import com.example.release_kalender.databinding.FragmentTrendingBinding;
-import com.example.release_kalender.ui.home.HomeViewModel;
 
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
     private FragmentTrendingBinding binding;
     private TrendingViewModel trendingViewModel;
     private GameAdapter adapter;
-    private List<Game> gameList = new ArrayList<>();
+    private final List<Game> gameList = new ArrayList<>();
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
@@ -57,6 +57,7 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
                 });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -69,6 +70,7 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         TrendingViewModel trendingViewModel =
@@ -99,7 +101,7 @@ public class TrendingFragment extends Fragment implements GameAdapter.GameAdapte
 
     @Override
     public void onRequestCalendarPermission(Game game) {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
             createCalendarEvent(game);
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CALENDAR)) {
             showRationaleDialog();
